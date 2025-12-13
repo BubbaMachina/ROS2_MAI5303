@@ -1,0 +1,149 @@
+<?xml version="1.0" ?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="2R_Arm">
+  <!-- Colors -->
+  <material name="White">
+    <color rgba="0.8 0.8 0.8 0.5"/>
+  </material>
+  <material name="Orange">
+    <color rgba="1.0 0.5 0.0 1.0"/>
+  </material>
+  <material name="Blue">
+  <color rgba="0.2 0.4 0.6 1.0"/>      
+  </material>
+  <material name="Red">
+    <color rgba="1 0 0 1.0"/>      
+  </material>
+
+  <!-- World frame -->
+  <link name="world"/>
+
+  <joint name="world_to_base" type="fixed">
+    <parent link="world"/>
+    <child link="base"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+
+  <!--Base-->
+   <link name="Base">
+    <!-- <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="10"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+    </inertial> -->
+     <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.1"/>
+      </geometry>
+      <material name="White"/>
+    </visual>
+  </link>
+
+<!-- Joint connecting base to servo 1 spinner -->
+  <joint name="Joint_1" type="revolute">
+    <limit lower="-3.14" upper="3.14" effort="1000" velocity="0.5"/>
+    <parent link="Base"/>
+    <child link="Link_0"/>
+    <origin rpy="0 0 0" xyz="0 0 0.12"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+   <!-- Link 1 -->
+  <link name="Link_0">
+    <!-- <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1"/>
+      <inertia ixx="0.00" ixy="0" ixz="0" iyy="0.00" iyz="0" izz="0.00"/>
+    </inertial> -->
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.06" length="0.1"/>
+      </geometry>
+      <material name="Blue"/>
+    </visual>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.02" length="0.14"/>
+      </geometry>
+      <material name="Blue"/>
+    </visual>
+  </link>
+
+    <!-- Joint 2 -->
+  <joint name="Joint_2" type="revolute">
+    <limit lower="-3.14" upper="3.14" effort="1000" velocity="0.5"/>
+    <parent link="Link_0"/>
+    <child link="Link_1"/>
+    <origin rpy="0 0 0" xyz="0 0 0.1"/>
+    <axis xyz="1 0 0"/>
+  </joint>
+
+  <link name="Link_1">
+    <!-- <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.1"/>
+      <mass value="10"/>
+      <inertia ixx="0.0" ixy="0" ixz="0" iyy="0.0" iyz="0" izz="0.0"/>
+    </inertial> -->
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.1"/>
+      <geometry>
+        <cylinder radius="0.02" length="0.2"/>
+      </geometry>
+      <material name="White"/>
+    </visual>
+  </link>
+      <!-- Joint 3 -->
+  <joint name="Joint_3" type="revolute">
+    <limit lower="-3.14" upper="3.14" effort="1000" velocity="0.5"/>
+    <parent link="Link_1"/>
+    <child link="Link_2"/>
+    <origin rpy="0 0 0" xyz="0 0 0.22"/>
+    <axis xyz="1 0 0"/>
+  </joint>
+   <!-- Upper Arm -->
+  <link name="Link_2">
+    <!-- <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.1"/>
+      <mass value="10"/>
+      <inertia ixx="0.0" ixy="0" ixz="0" iyy="0.0" iyz="0" izz="0.0"/>
+    </inertial> -->
+    <visual>
+      <origin rpy="-1.57 0 0" xyz="0 -0.17 -0.13"/>
+      <geometry>
+        <!-- <cylinder radius="0.02" length="0.2"/> -->
+        <mesh filename="package://arm1/urdf/Link3.stl" scale="0.003 0.003 0.003"/>
+      </geometry>
+      <material name="Blue"/>
+    </visual>
+  </link>
+
+   <!-- Joint End-Effector -->
+  <joint name="Joint_EE" type="fixed">
+    <limit lower="-3.14" upper="3.14" effort="1000" velocity="0.5"/>
+    <parent link="Link_2"/>
+    <child link="Link_EE"/>
+    <origin rpy="0 0 0" xyz="0 0 0.22"/>
+    <axis xyz="1 0 0"/>
+  </joint>
+    <!-- End-Effector -->
+  <link name="Link_EE">
+    <!-- <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+    </inertial> -->
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.03"/>
+      </geometry>
+      <material name="Red"/>
+    </visual>
+  </link>
+
+</robot>
+
