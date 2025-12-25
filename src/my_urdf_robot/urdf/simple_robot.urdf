@@ -1,0 +1,195 @@
+<?xml version="1.0"?>
+<robot name="simple_bot">
+
+<material name="blue">
+  <color rgba="0 0 1 1"/>
+</material>
+
+<material name="red">
+  <color rgba="1 0 0 1"/>
+</material>
+
+<!-- Base link -->
+
+<link name="base_link">
+<inertial>
+  <origin xyz="0 0 0" rpy="0 0 0"/>
+  <mass value="10.0"/>
+  <inertia
+    ixx="0.5" ixy="0.0" ixz="0.0"
+    iyy="0.5" iyz="0.0"
+    izz="0.5"/>
+</inertial>
+<visual>
+<geometry>
+<box size="0.4 0.4 0.2"/>
+</geometry>
+<material name="blue"/>
+</visual>
+
+  <collision>
+    <geometry>
+      <box size="0.4 0.4 0.2"/>
+    </geometry>
+  </collision>
+</link>
+
+<!-- Joint was continous-->
+<joint name="base_to_head" type="fixed"> 
+<parent link="base_link"/>
+<child link="head_link"/>
+<origin xyz="0 0 0.25"/>
+</joint>
+
+<!-- Head link -->
+<link name="head_link">
+<inertial>
+  <origin xyz="0 0 0" rpy="0 0 0"/>
+  <mass value="1.0"/>
+  <inertia
+    ixx="0.01" ixy="0.0" ixz="0.0"
+    iyy="0.01" iyz="0.0"
+    izz="0.01"/>
+</inertial>
+<visual>
+<geometry>
+<sphere radius="0.15"/>
+</geometry>
+<material name="red"/>
+</visual>
+</link>
+
+<!-- Joint was revolute -->
+ <joint name="head_to_arm" type="fixed">
+     <limit lower="-3.14" upper="3.14" effort="1000" velocity="0.5"/>
+
+    <parent link="head_link"/>
+    <child link="arm_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0.12"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+     <!-- arm_link -->
+  <link name="arm_link">
+  
+  <inertial>
+  <origin xyz="0 0 0" rpy="0 0 0"/>
+  <mass value="1.0"/>
+  <inertia
+    ixx="0.01" ixy="0.0" ixz="0.0"
+    iyy="0.01" iyz="0.0"
+    izz="0.01"/>
+</inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.02" length="0.3"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+
+<link name="left_wheel">
+<inertial>
+  <origin xyz="0 0 0" rpy="0 0 0"/>
+  <mass value="1.0"/>
+  <inertia
+    ixx="0.05" ixy="0.0" ixz="0.0"
+    iyy="0.05" iyz="0.0"
+    izz="0.05"/>
+</inertial>
+ <!-- Visual (matches collision exactly) -->
+  <visual>
+    <origin rpy="1.5708 0 0"/>
+    <geometry>
+      <cylinder radius="0.1" length="0.05"/>
+    </geometry>
+    <material name="blue"/>
+  </visual>
+
+ <collision>
+ <origin rpy="1.5708 0 0"/>
+    <geometry>
+      <cylinder radius="0.1" length="0.05"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="right_wheel">
+<inertial>
+  <origin xyz="0 0 0" rpy="0 0 0"/>
+  <mass value="1.0"/>
+  <inertia
+    ixx="0.05" ixy="0.0" ixz="0.0"
+    iyy="0.05" iyz="0.0"
+    izz="0.05"/>
+</inertial>
+
+<!-- Visual (matches collision exactly) -->
+  <visual>
+    <origin rpy="1.5708 0 0"/>
+    <geometry>
+      <cylinder radius="0.1" length="0.05"/>
+    </geometry>
+    <material name="blue"/>
+  </visual>
+
+<collision>
+<origin rpy="1.5708 0 0"/>
+    <geometry>
+      <cylinder radius="0.1" length="0.05"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="dummy_left_wheel_joint" type="continuous">
+  <parent link="base_link"/>
+  <child link="left_wheel"/>
+  <origin xyz="0 0.25 -0.1"/>
+  <axis xyz="0 1 0"/>
+</joint>
+
+<joint name="dummy_right_wheel_joint" type="continuous">
+  <parent link="base_link"/>
+  <child link="right_wheel"/>
+  <origin xyz="0 -0.25 -0.1"/>
+  <axis xyz="0 1 0"/>
+</joint>
+
+<gazebo reference="left_wheel">
+  <mu1>1.0</mu1>
+  <mu2>1.0</mu2>
+</gazebo>
+
+<gazebo reference="right_wheel">
+  <mu1>1.0</mu1>
+  <mu2>1.0</mu2>
+</gazebo>
+
+<!-- Gazebo plugin to accept cmd_vel -->
+<gazebo>
+  <plugin
+    filename="libgz-sim-diff-drive-system.so"
+    name="gz::sim::systems::DiffDrive">
+
+    <!-- ROS topic -->
+    <topic>cmd_vel</topic>
+
+    <!-- Robot frame -->
+    <base_link>base_link</base_link>
+
+    <!-- Fake wheel separation/radius (still required) -->
+    <wheel_separation>0.5</wheel_separation>
+    <wheel_radius>0.1</wheel_radius>
+
+    <!-- These frames must exist -->
+    <left_joint>dummy_left_wheel_joint</left_joint>
+    <right_joint>dummy_right_wheel_joint</right_joint>
+
+  </plugin>
+</gazebo>
+
+
+</robot>
+
+
